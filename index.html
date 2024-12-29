@@ -2,66 +2,104 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Krishna Chanting App</title>
+    <title>Krishna Chanting Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f4f6f9; }
-        .chant-container { max-width: 600px; margin: auto; }
-        .chant-card { 
-            transition: transform 0.3s; 
-            cursor: pointer; 
+        body { 
+            background-color: #f4f6f9; 
+            font-family: 'Arial', sans-serif;
         }
-        .chant-card:hover { transform: scale(1.05); }
+        .chant-container { 
+            max-width: 600px; 
+            margin: auto; 
+            padding-top: 50px;
+        }
+        .chant-card {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .chant-card:hover {
+            transform: scale(1.02);
+        }
+        .chant-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
     </style>
 </head>
 <body>
-    <div class="container chant-container mt-5">
-        <div id="auth-container" class="card p-4">
-            <h2 class="text-center mb-4">Krishna Chanting Portal</h2>
+    <script>
+        (function() {
+            window.getFirebaseConfig = function() {
+                return {
+                    apiKey: "AIzaSyC3mwFH49WiG4Swjmo-1JV9wjAMBIDkLA4",
+                    authDomain: "pushtiwords.firebaseapp.com",
+                    projectId: "pushtiwords",
+                    databaseURL: "https://pushtiwords-default-rtdb.firebaseio.com",
+                    storageBucket: "pushtiwords.appspot.com",
+                    messagingSenderId: "460696747514",
+                    appId: "1:460696747514:web:40e94e966bdfcfe624b843"
+                };
+            };
+        })();
+    </script>
+
+    <div class="container chant-container">
+        <div id="auth-container" class="card p-4 chant-card">
+            <h2 class="text-center mb-4">Spiritual Chanting Journey</h2>
             <div class="mb-3">
-                <input type="email" id="email" class="form-control" placeholder="Email">
+                <input type="email" id="email" class="form-control" placeholder="Email Address">
             </div>
             <div class="mb-3">
                 <input type="password" id="password" class="form-control" placeholder="Password">
             </div>
-            <div class="d-flex justify-content-between">
-                <button id="loginBtn" class="btn btn-primary">Login</button>
-                <button id="registerBtn" class="btn btn-success">Register</button>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="nav-buttons">
+                    <button id="loginBtn" class="btn btn-primary">Login</button>
+                    <button id="registerBtn" class="btn btn-success">Register</button>
+                </div>
+                <a href="#" class="text-muted small">Forgot Password?</a>
             </div>
-            <div id="error-message" class="text-danger mt-3"></div>
+            <div id="error-message" class="text-danger text-center mt-3"></div>
         </div>
 
         <div id="chanting-section" style="display:none;">
-            <div class="card mt-4">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">Shree Krishna Sharnamaha Chanting</h3>
-                    <button id="logoutBtn" class="btn btn-light float-end">Logout</button>
+            <div class="card mt-4 chant-card">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">Krishna Chanting</h3>
+                    <div class="nav-buttons">
+                        <button id="viewLeaderboardBtn" class="btn btn-light btn-sm">Leaderboard</button>
+                        <button id="viewMantraJaapBtn" class="btn btn-light btn-sm">Mantra Jaap</button>
+                        <button id="logoutBtn" class="btn btn-light btn-sm">Logout</button>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <div id="chant-stats" class="mb-3">
-                        <h4>Your Chanting Stats</h4>
-                        <p>Total Chants: <span id="total-chants">0</span></p>
-                        <p>Current Level: <span id="current-level">Beginner</span></p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Your Progress</h4>
+                            <p>Total Chants: <span id="total-chants" class="fw-bold">0</span></p>
+                            <p>Current Level: <span id="current-level" class="fw-bold">Beginner</span></p>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <button id="startChantingBtn" class="btn btn-success">Start Chanting</button>
+                        </div>
                     </div>
 
-                    <div class="chant-bank">
-                        <h4>Chant Bank</h4>
-                        <div id="chant-list" class="row"></div>
-                    </div>
+                    <hr>
 
-                    <div class="mt-4">
-                        <button id="customChantBtn" class="btn btn-success me-2">Add Custom Chant</button>
-                        <button id="mahaMantraBtn" class="btn btn-warning">Maha Mantra Challenge</button>
-                    </div>
-                </div>
-            </div>
+                    <div id="chant-list" class="row g-3"></div>
 
-            <div class="card mt-4">
-                <div class="card-header bg-info text-white">
-                    <h3 class="mb-0">Global Leaderboard</h3>
-                </div>
-                <div class="card-body">
-                    <ol id="global-leaderboard" class="list-group list-group-numbered"></ol>
+                    <div class="mt-3">
+                        <div class="input-group">
+                            <input type="text" id="customMantraInput" class="form-control" placeholder="Add Custom Mantra">
+                            <button id="saveCustomMantraBtn" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -73,18 +111,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
     <script>
-        // Firebase Configuration
-        var firebaseConfig = {
-            apiKey: "AIzaSyC3mwFH49WiG4Swjmo-1JV9wjAMBIDkLA4",
-            authDomain: "pushtiwords.firebaseapp.com",
-            projectId: "pushtiwords",
-            databaseURL: "https://pushtiwords-default-rtdb.firebaseio.com",
-            storageBucket: "pushtiwords.appspot.com",
-            messagingSenderId: "460696747514",
-            appId: "1:460696747514:web:40e94e966bdfcfe624b843"
-        };
-
-        // Initialize Firebase
+        // Initialize Firebase with secure configuration
+        var firebaseConfig = window.getFirebaseConfig();
         firebase.initializeApp(firebaseConfig);
         var auth = firebase.auth();
         var database = firebase.database();
@@ -105,6 +133,103 @@
 
         function clearError() {
             document.getElementById('error-message').textContent = '';
+        }
+
+        function createChantCard(chantName) {
+            var card = document.createElement('div');
+            card.className = 'col-md-6 mb-3';
+            card.innerHTML = `
+                <div class="card chant-card">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <span>${chantName}</span>
+                        <div class="chant-controls">
+                            <button class="btn btn-sm btn-danger chant-minus">-</button>
+                            <span class="chant-count" data-chant="${chantName}">0</span>
+                            <button class="btn btn-sm btn-success chant-plus">+</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            var plusBtn = card.querySelector('.chant-plus');
+            var minusBtn = card.querySelector('.chant-minus');
+            var countSpan = card.querySelector('.chant-count');
+
+            plusBtn.addEventListener('click', function() {
+                performChant(chantName, 1, countSpan);
+            });
+            
+            minusBtn.addEventListener('click', function() {
+                performChant(chantName, -1, countSpan);
+            });
+            
+            return card;
+        }
+
+        function loadChants() {
+            var chantList = document.getElementById('chant-list');
+            chantList.innerHTML = '';
+            
+            // Add predefined and custom chants
+            PREDEFINED_CHANTS.forEach(function(chant) {
+                chantList.appendChild(createChantCard(chant));
+            });
+        }
+
+        function performChant(chantName, direction, countElement) {
+            if (!currentUser) return;
+
+            var userChantRef = database.ref(`users/${currentUser.uid}/chants/${chantName}`);
+            var totalChantRef = database.ref(`users/${currentUser.uid}/totalChants`);
+
+            userChantRef.transaction(function(currentChants) {
+                return (currentChants || 0) + direction;
+            }, function(error, committed, snapshot) {
+                if (error) {
+                    console.error('Transaction failed', error);
+                    return;
+                }
+
+                // Update total chants
+                totalChantRef.transaction(function(currentTotal) {
+                    return (currentTotal || 0) + direction;
+                }, function(error, committed, snapshot) {
+                    if (!error) {
+                        // Update UI
+                        var totalChantSpan = document.getElementById('total-chants');
+                        var currentTotal = parseInt(totalChantSpan.textContent) + direction;
+                        totalChantSpan.textContent = currentTotal;
+
+                        // Update chant count display
+                        if (countElement) {
+                            var currentCount = parseInt(countElement.textContent) + direction;
+                            countElement.textContent = currentCount;
+                        }
+
+                        // Update level
+                        updateUserLevel(currentTotal);
+                    }
+                });
+            });
+        }
+
+        function updateUserLevel(totalChants) {
+            var levelSpan = document.getElementById('current-level');
+            var newLevel = calculateLevel(totalChants);
+            levelSpan.textContent = newLevel;
+
+            // Update user level in database
+            if (currentUser) {
+                database.ref(`users/${currentUser.uid}/level`).set(newLevel);
+            }
+        }
+
+        function calculateLevel(totalChants) {
+            if (totalChants < 100) return "Beginner";
+            if (totalChants < 500) return "Novice";
+            if (totalChants < 1000) return "Intermediate";
+            if (totalChants < 5000) return "Advanced";
+            return "Master";
         }
 
         // Event Listeners
@@ -172,18 +297,36 @@
                 });
             });
 
-            // Custom Chant
-            document.getElementById('customChantBtn').addEventListener('click', function() {
-                var customChant = prompt("Enter your custom chant:");
-                if (customChant && customChant.trim()) {
-                    PREDEFINED_CHANTS.push(customChant.trim());
-                    loadChants();
-                }
+            // View Leaderboard
+            document.getElementById('viewLeaderboardBtn').addEventListener('click', function() {
+                window.location.href = 'leaderboard.html';
             });
 
-            // Maha Mantra Challenge
-            document.getElementById('mahaMantraBtn').addEventListener('click', function() {
-                alert("Maha Mantra Challenge: Chant 1008 times for spiritual elevation!");
+            // View Mantra Jaap
+            document.getElementById('viewMantraJaapBtn').addEventListener('click', function() {
+                window.location.href = 'mantra-jaap.html';
+            });
+
+            // Save Custom Mantra
+            document.getElementById('saveCustomMantraBtn').addEventListener('click', function() {
+                var customMantraInput = document.getElementById('customMantraInput');
+                var customMantra = customMantraInput.value.trim();
+
+                if (customMantra) {
+                    // Add to predefined chants
+                    PREDEFINED_CHANTS.push(customMantra);
+                    
+                    // Save to user's custom mantras
+                    if (currentUser) {
+                        database.ref(`users/${currentUser.uid}/customMantras`).push(customMantra);
+                    }
+
+                    // Reload chants
+                    loadChants();
+
+                    // Clear input
+                    customMantraInput.value = '';
+                }
             });
 
             // Authentication state listener
@@ -199,106 +342,35 @@
             });
         });
 
-        // Existing functions remain the same
         function showChantingSection(user) {
-            if (!user) return;
-
             document.getElementById('auth-container').style.display = 'none';
             document.getElementById('chanting-section').style.display = 'block';
 
-            var userProfileRef = database.ref('users/' + user.uid);
-            userProfileRef.once('value').then(function(snapshot) {
-                var userData = snapshot.val();
-                if (userData) {
-                    document.getElementById('total-chants').textContent = userData.totalChants || 0;
-                    document.getElementById('current-level').textContent = userData.level || "Beginner";
-                }
-            });
-
-            loadChants();
-            updateLeaderboard();
-        }
-
-        function loadChants() {
-            var chantList = document.getElementById('chant-list');
-            chantList.innerHTML = PREDEFINED_CHANTS.map(function(chant) {
-                return `
-                    <div class="col-md-6 mb-3">
-                        <div class="card chant-card" onclick="performChant('${chant}')">
-                            <div class="card-body">
-                                <h5 class="card-title">${chant}</h5>
-                                <button class="btn btn-primary btn-sm">Chant</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function performChant(chantName) {
-            if (!currentUser) return;
-
-            var userChantsRef = database.ref('chants/' + currentUser.uid + '/' + chantName);
-            var userProfileRef = database.ref('users/' + currentUser.uid);
-
-            userChantsRef.transaction(function(currentCount) {
-                return (currentCount || 0) + 1;
-            });
-
-            userProfileRef.transaction(function(profile) {
-                var newTotalChants = (profile.totalChants || 0) + 1;
-                var newLevel = calculateLevel(newTotalChants);
-                
-                return {
-                    ...profile,
-                    totalChants: newTotalChants,
-                    level: newLevel
-                };
-            }).then(function() {
-                var totalChantsElement = document.getElementById('total-chants');
-                totalChantsElement.textContent = parseInt(totalChantsElement.textContent) + 1;
-                
-                var audio = new Audio('https://sndup.net/r3ncc/');
-                audio.play();
-
-                updateLeaderboard();
-            });
-        }
-
-        function calculateLevel(totalChants) {
-            if (totalChants < 100) return "Beginner";
-            if (totalChants < 500) return "Novice";
-            if (totalChants < 1000) return "Intermediate";
-            if (totalChants < 5000) return "Advanced";
-            return "Spiritual Master";
-        }
-
-        function updateLeaderboard() {
-            var leaderboardRef = database.ref('users').orderByChild('totalChants').limitToLast(10);
-            var leaderboardElement = document.getElementById('global-leaderboard');
-
-            leaderboardRef.once('value', function(snapshot) {
-                var users = [];
-                snapshot.forEach(function(childSnapshot) {
-                    users.push({
-                        email: childSnapshot.val().email,
-                        totalChants: childSnapshot.val().totalChants || 0
-                    });
+            // Load user-specific data
+            if (user) {
+                var userRef = database.ref(`users/${user.uid}`);
+                userRef.once('value').then(function(snapshot) {
+                    var userData = snapshot.val();
+                    if (userData) {
+                        document.getElementById('total-chants').textContent = userData.totalChants || 0;
+                        document.getElementById('current-level').textContent = userData.level || "Beginner";
+                    }
                 });
 
-                users.sort(function(a, b) { return b.totalChants - a.totalChants; });
+                // Load custom mantras
+                var customMantrasRef = database.ref(`users/${user.uid}/customMantras`);
+                customMantrasRef.once('value').then(function(snapshot) {
+                    snapshot.forEach(function(childSnapshot) {
+                        var customMantra = childSnapshot.val();
+                        if (!PREDEFINED_CHANTS.includes(customMantra)) {
+                            PREDEFINED_CHANTS.push(customMantra);
+                        }
+                    });
+                    loadChants();
+                });
+            }
 
-                leaderboardElement.innerHTML = users.map(function(user) {
-                    return `
-                        <li class="list-group-item d-flex justify-content-between align-items-start">
-                            <div class="ms-2 me-auto">
-                                <div class="fw-bold">${user.email.split('@')[0]}</div>
-                            </div>
-                            <span class="badge bg-primary rounded-pill">${user.totalChants}</span>
-                        </li>
-                    `;
-                }).join('');
-            });
+            loadChants();
         }
     </script>
 </body>
